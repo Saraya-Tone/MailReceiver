@@ -1,5 +1,6 @@
 ﻿// Global Var
-attachedFilePath = "C:/Users/tone/Documents/Wakanda/attachedfiles/";
+attachedFilePath = "C:/MailReceiver/attachedfiles/";
+//attachedFilePath = "C:/Users/tone/Documents/Wakanda/attachedfiles/";
 //attachedFilePath = "/Users/kuni/Documents/Wakanda/Attached/";
 
 folders = new Array(); // メールの件名に含まれる文字列に応じてサブフォルダを決定
