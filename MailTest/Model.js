@@ -9,6 +9,8 @@ folders[0] = "Dongguan";
 folders[1] = "Shanghai";
 folders[2] = "Thai";
 
+
+
 folderNumbers = folders.length;
 
 function getpath(subject) {
