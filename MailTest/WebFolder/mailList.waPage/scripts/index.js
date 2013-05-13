@@ -21,6 +21,7 @@ WAF.onAfterInit = function onAfterInit() {// @lock
 		var idnum  = $$('dataGrid1').column("ID").getValueForInput();
 //		alert("保存開始 "+idnum);
 		ds.Mailbox.saveSelectedFiles(idnum); // Class Method を同期実行
+		location.reload();
 		alert("保存終了");
 		
 	};// @lock

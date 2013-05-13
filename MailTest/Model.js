@@ -77,11 +77,11 @@ function receiveMailMain () {
 		if (found != null) return; // すでにメールがあれば以下の処理は実行しない 
 		
 		theMail.messageID = msgid; 
-		theMail.s送信元 = oneMail["From"] ;
-		theMail.s件名 =  oneMail["Subject"] ;
-		var folderpath = getpath(theMail.s件名);
+		theMail.sender = oneMail["From"] ;
+		theMail.title =  oneMail["Subject"] ;
+		var folderpath = getpath(theMail.title);
 		
-		theMail.s送信日付  = oneMail["Date"];
+		theMail.sentDate  = oneMail["Date"];
 		
 		theMail.isMIME = oneMail.isMIME();
 		
@@ -93,29 +93,48 @@ function receiveMailMain () {
 			var filename ; // 添付ファイル名
 			
 			
-			theMail.s本文=" ";
+			theMail.bodyText=" ";
+			theMail.savedFilecount = 0;
+			theMail.allSaved = true;
+			
 			
 			var len = parts.length;
+			var savestat = 9;   
+			
 			for (i=0;i<len;i++) {	
 				aPart = parts[i];
 				mediaType = aPart.mediaType;
 				filename =  aPart.fileName;
-				theMail.s本文 = theMail.s本文+"\n("+i+") Type="+mediaType+",filename="+filename;
+				theMail.bodyText = theMail.bodyText+"\n("+i+") Type="+mediaType+",filename="+filename;
 				
 				if (filename != "" ) 
 				{
-					aPart.save(folderpath,true); //添付ファイルを外部フォルダに保存
-					
+					var fileobj = File(folderpath+filename);
+					if (fileobj.exists) 
+					{
+						savestat = 1;  // ファイルあり、上書き不可
+						theMail.allSaved = false;
+//						aPart.save(folderpath,true); //添付ファイルを外部フォルダに上書き保存
+
+					} else 
+					{
+						savestat = 2;  // ファイルなし、新規保存
+						aPart.save(folderpath); //添付ファイルを外部フォルダに保存
+						theMail.savedFilecount++;
+					}		
+
+										
 					// 添付ファイル情報の保存
 					var theAttachment = new ds.Attachment();
-					theAttachment.sファイル名 = filename;
-					theAttachment.nサイズ = aPart.size;
+					theAttachment.afileName = filename;
+					theAttachment.afileSize = aPart.size;
+					theAttachment.afileStatus = savestat;					
 					
 					theMail.save();   			// メールデータ保存
 					var key = theMail.getKey();
 					theAttachment.mailbox = (key);
 					
-					theAttachment.a添付ファイル = aPart.asBlob;
+					theAttachment.afile = aPart.asBlob;
 					
 					theAttachment.save();		// 添付ファイルデータ保存
 					
@@ -125,7 +144,7 @@ function receiveMailMain () {
 					theBody = oneMail.getBody();
 					if (theBody != null)
 					{
-						theMail.s本文 = theMail.s本文 + "\n"+ oneMail.getBody().join("\n");
+						theMail.bodyText = theMail.bodyText + "\n"+ oneMail.getBody().join("\n");
 					}
 				}	
 				
@@ -133,7 +152,7 @@ function receiveMailMain () {
 			};
 		} else {	
 			var body = oneMail.getBody();
-			theMail.s本文 = body.join("\n");
+			theMail.bodyText = body.join("\n");
 		}
 		
 
@@ -148,11 +167,11 @@ guidedModel =// @startlock
 {
 	Mailbox :
 	{
-		s送信日付表示用 :
+		dateString :
 		{
 			onGet:function()
 			{// @endlock
-				var wkdate = this.s送信日付;
+				var wkdate = this.sentDate;
 				var millseconds = Date.parse(wkdate);
 				var date2 = new Date();
 				date2.setTime(millseconds);
@@ -195,18 +214,20 @@ guidedModel =// @startlock
 				var theMail = ds.Mailbox(id); 
 				
 				fileArray = theMail.attachments;
-				var folderpath = getpath(theMail.s件名);
+				var folderpath = getpath(theMail.title);
 
-				fileArray.forEach( function(oneFile) 
+				fileArray.forEach( function(oneFile) // 全ファイル上書き保存
 				{
-					var theBlob = oneFile.a添付ファイル; 
-					var filename = oneFile.sファイル名;
-
+					var theBlob = oneFile.afile; 
+					var filename = oneFile.afileName;
+					oneFile.afileStatus = 3;   //  全ファイル上書き保存による保存
 					var dataFile = File(folderpath + filename );    	
 					
 					theBlob.copyTo(dataFile,"OverWrite");
 					
 				});
+				theMail.allSaved = true;
+				theMail.save(); 
 			}// @startlock
 		}
 	}

@@ -3,6 +3,26 @@
 	Changes to this CSS file might be lost when it is regenerated.
 */
 
+#checkbox1 {
+	 width: 16px;
+	 height: 16px;
+	 top: 14px;
+	 left: 151px;
+	
+	 position: absolute;
+	 
+}
+
+#label4 {
+	 width: 101px;
+	 height: 16px;
+	 top: 14px;
+	 left: 172px;
+	
+	 position: absolute;
+	 
+}
+
 #richText4 {
 	 width: 100px;
 	 height: 18px;
@@ -60,7 +80,7 @@
 }
 
 #richText3 {
-	 width: 83px;
+	 width: 71px;
 	 height: 16px;
 	 top: 88px;
 	 left: 95px;
@@ -89,7 +109,7 @@
 }
 
 #richText2 {
-	 width: 148px;
+	 width: 106px;
 	 height: 16px;
 	 top: 54px;
 	 left: 95px;
@@ -118,7 +138,7 @@
 }
 
 #richText1 {
-	 width: 96px;
+	 width: 87px;
 	 height: 16px;
 	 top: 20px;
 	 left: 95px;
@@ -162,10 +182,10 @@
 }
 
 #dataGrid1 {
-	 width: 970px;
-	 height: 260px;
-	 top: 47px;
-	 left: 24px;
+	 width: 972px;
+	 height: 265px;
+	 top: 48px;
+	 left: 29px;
 	
 	 position: absolute;
 	 
