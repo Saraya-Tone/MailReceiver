@@ -41,6 +41,8 @@
 
 	<attributes name="afile" kind="storage" scope="public" type="blob"/>
 
+	<attributes name="afileSaveDate" kind="storage" scope="public" type="string"/>
+
 	<attributes name="mailbox" kind="relatedEntity" scope="public" type="Mailbox" path="Mailbox"/>
 
 </dataClasses>

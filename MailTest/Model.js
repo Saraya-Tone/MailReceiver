@@ -13,6 +13,36 @@ folders[2] = "Thai";
 
 folderNumbers = folders.length;
 
+function formatDateTime(datetime) {  // datetime = string data of date and time
+	var date2 ;
+	if (datetime == undefined || datetime == null) {
+		date2 = new Date();
+	} else {
+		var millseconds = Date.parse(datetime);
+		date2 = new Date();
+		date2.setTime(millseconds);
+	}
+	
+	yy = date2.getFullYear();
+	mm = date2.getMonth() + 1;
+	dd = date2.getDate();
+	hh = date2.getHours();
+	minutes = date2.getMinutes();
+	ss = date2.getSeconds();
+
+	if (mm < 10) { mm = "0" + mm; }
+	if (dd < 10) { dd = "0" + dd; }
+	if (hh < 10) { hh = "0" + hh; }
+	if (minutes < 10) { minutes = "0" + minutes; }
+	if (ss < 10) { ss = "0" + ss; }
+
+	var formatedDate = yy + "/" + mm + "/" + dd + " " + hh + ":" + minutes + ":" + ss
+
+	return formatedDate;	
+}	
+
+
+
 function getpath(subject) {
 	for (i=0; i<folderNumbers; i++) {
 		var ix = subject.indexOf(folders[i]);
@@ -120,6 +150,7 @@ function receiveMailMain () {
 					{
 						savestat = 2;  // ファイルなし、新規保存
 						aPart.save(folderpath); //添付ファイルを外部フォルダに保存
+						theAttachment.afileSaveDate = formatDateTime();
 						theMail.savedFilecount++;
 					}		
 
@@ -172,26 +203,8 @@ guidedModel =// @startlock
 			onGet:function()
 			{// @endlock
 				var wkdate = this.sentDate;
-				var millseconds = Date.parse(wkdate);
-				var date2 = new Date();
-				date2.setTime(millseconds);
 				
-				yy = date2.getFullYear();
-				mm = date2.getMonth() + 1;
-				dd = date2.getDate();
-				hh = date2.getHours();
-				minutes = date2.getMinutes();
-				ss = date2.getSeconds();
-
-				if (mm < 10) { mm = "0" + mm; }
-				if (dd < 10) { dd = "0" + dd; }
-				if (hh < 10) { hh = "0" + hh; }
-				if (minutes < 10) { minutes = "0" + minutes; }
-				if (ss < 10) { ss = "0" + ss; }
-
-				formatedDate = yy + "/" + mm + "/" + dd + " " + hh + ":" + minutes + ":" + ss
-
-				return formatedDate;
+				return formatDateTime(wkdate);
 				
 				// end function
 			}// @startlock
@@ -222,7 +235,7 @@ guidedModel =// @startlock
 					var filename = oneFile.afileName;
 					oneFile.afileStatus = 3;   //  全ファイル上書き保存による保存
 					var dataFile = File(folderpath + filename );    	
-					
+					oneFile.afileSaveDate = formatDateTime();
 					theBlob.copyTo(dataFile,"OverWrite");
 					
 				});
