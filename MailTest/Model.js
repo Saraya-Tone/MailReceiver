@@ -228,6 +228,7 @@ guidedModel =// @startlock
 				
 				fileArray = theMail.attachments;
 				var folderpath = getpath(theMail.title);
+				var i = 0;
 
 				fileArray.forEach( function(oneFile) // 全ファイル上書き保存
 				{
@@ -237,9 +238,11 @@ guidedModel =// @startlock
 					var dataFile = File(folderpath + filename );    	
 					oneFile.afileSaveDate = formatDateTime();
 					theBlob.copyTo(dataFile,"OverWrite");
+					i++;
 					
 				});
 				theMail.allSaved = true;
+				theMail.savedFilecount = true;				
 				theMail.save(); 
 			}// @startlock
 		}
