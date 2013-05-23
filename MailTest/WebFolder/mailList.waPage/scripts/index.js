@@ -2,6 +2,7 @@
 WAF.onAfterInit = function onAfterInit() {// @lock
 
 // @region namespaceDeclaration// @startlock
+	var allMailProcessed = {};	// @button
 	var checkbox1 = {};	// @checkbox
 	var documentEvent = {};	// @document
 	var saveFiles = {};	// @button
@@ -9,6 +10,14 @@ WAF.onAfterInit = function onAfterInit() {// @lock
 // @endregion// @endlock
 
 // eventHandlers// @lock
+
+	allMailProcessed.click = function allMailProcessed_click (event)// @startlock
+	{// @endlock
+		if (window.confirm("全メールの添付ファイルを処理済にしますか？")) {
+			ds.Mailbox.allMailProcessed();
+			location.reload();	
+		};	
+	};// @lock
 
 	checkbox1.click = function checkbox1_click (event)// @startlock
 	{// @endlock
@@ -50,6 +59,7 @@ WAF.onAfterInit = function onAfterInit() {// @lock
 	};// @lock
 
 // @region eventManager// @startlock
+	WAF.addListener("allMailProcessed", "click", allMailProcessed.click, "WAF");
 	WAF.addListener("checkbox1", "click", checkbox1.click, "WAF");
 	WAF.addListener("document", "onLoad", documentEvent.onLoad, "WAF");
 	WAF.addListener("saveFiles", "click", saveFiles.click, "WAF");

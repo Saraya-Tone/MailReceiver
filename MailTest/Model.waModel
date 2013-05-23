@@ -39,6 +39,12 @@
 
 	<attributes name="afileStatus" kind="storage" scope="public" type="byte"/>
 
+	<attributes name="afileStatMsg" kind="calculated" scope="public" type="string" scriptKind="javascript">
+
+		<onGet from="guidedModel.Attachment.afileStatMsg.onGet"/>
+
+	</attributes>
+
 	<attributes name="afile" kind="storage" scope="public" type="blob"/>
 
 	<attributes name="afileSaveDate" kind="storage" scope="public" type="string"/>
@@ -74,6 +80,8 @@
 	<attributes name="savedFilecount" kind="storage" scope="public" type="long"/>
 
 	<attributes name="attachments" kind="relatedEntities" scope="public" type="AttachmentCollection" reversePath="true" path="mailbox"/>
+
+	<methods name="allMailProcessed" applyTo="dataClass" scope="public" from="guidedModel.Mailbox.methods.allMailProcessed"/>
 
 	<methods name="getNewMailCollection" applyTo="entityCollection" scope="public" from="guidedModel.Mailbox.collectionMethods.getNewMailCollection"/>
 

@@ -136,6 +136,10 @@ function receiveMailMain () {
 				mediaType = aPart.mediaType;
 				filename =  aPart.fileName;
 				theMail.bodyText = theMail.bodyText+"\n("+i+") Type="+mediaType+",filename="+filename;
+				// 添付ファイル情報の保存
+				var theAttachment = new ds.Attachment();
+				theAttachment.afileName = filename;
+				theAttachment.afileSize = aPart.size;
 				
 				if (filename != "" ) 
 				{
@@ -153,12 +157,7 @@ function receiveMailMain () {
 						theAttachment.afileSaveDate = formatDateTime();
 						theMail.savedFilecount++;
 					}		
-
-										
-					// 添付ファイル情報の保存
-					var theAttachment = new ds.Attachment();
-					theAttachment.afileName = filename;
-					theAttachment.afileSize = aPart.size;
+					
 					theAttachment.afileStatus = savestat;					
 					
 					theMail.save();   			// メールデータ保存
@@ -194,8 +193,32 @@ function receiveMailMain () {
 	return;
 }
 
+
+
+
+
 guidedModel =// @startlock
 {
+	Attachment :
+	{
+		afileStatMsg :
+		{
+			onGet:function()
+			{// @endlock
+				switch (this.afileStatus) {
+					case 1:
+					return "添付未保存";
+					case 2:
+					return "添付新規保存";		
+					case 3:
+					return "添付上書保存";	
+					default:
+					return 	(this.afileStatus + "??");							
+				}	 
+				
+			}// @startlock
+		}
+	},
 	Mailbox :
 	{
 		dateString :
@@ -218,6 +241,15 @@ guidedModel =// @startlock
 		},
 		methods :
 		{// @endlock
+			allMailProcessed:function()
+			{// @lock
+				var allMails = ds.Mailbox.all();
+				allMails.forEach( function(oneMail) {
+					oneMail.allSaved = true;
+					oneMail.save();			
+				});
+				return;
+			},// @lock
 			getNewMails:function()
 			{// @lock
 				receiveMailMain ();
