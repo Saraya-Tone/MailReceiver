@@ -1,1 +1,0 @@
-﻿var pop3 = require("waf-mail/POP3");var allMails = [];var addr = "mail.tenko22.cher-ish.net"; var user = "test010@tenko22.cher-ish.net";var pass = "yashinomi2013";var port = 110;var isSSL = false;rc = pop3.getAllMail(addr, port , isSSL , user, pass, allMails ) 	;rc;

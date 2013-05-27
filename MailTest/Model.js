@@ -5,11 +5,9 @@ attachedFilePath = "C:/MailReceiver/attachedfiles/";
 
 folders = new Array(); // メールの件名に含まれる文字列に応じてサブフォルダを決定
 
-folders[0] = "Dongguan";
-folders[1] = "Shanghai";
-folders[2] = "Thai";
+var locationfilename = "location.txt";  // このファイルの改行コードはCRLFであること
 
-
+folders = loadText( attachedFilePath + locationfilename ).split("\r\n");
 
 folderNumbers = folders.length;
 
@@ -44,13 +42,14 @@ function formatDateTime(datetime) {  // datetime = string data of date and time
 
 
 function getpath(subject) {
-	for (i=0; i<folderNumbers; i++) {
+	for (i=0; (i<folderNumbers && folders[i] > " "); i++) {
 		var ix = subject.indexOf(folders[i]);
 		if (subject.indexOf(folders[i]) >= 0 ) {
 			return ( attachedFilePath + folders[i] + "/");
 		}	
 	}	 
-	return ( attachedFilePath + "Others/");
+//	return ( attachedFilePath + "Others/");
+	return ("none");
 }
 
 function receiveMailMain () {
@@ -66,11 +65,18 @@ function receiveMailMain () {
 //	var port = 995;
 //	var isSSL = true;
 	
-	var addr = "post2.saraya.com"; 
-	var user = "receiver@saraya.com";
-	var pass = "password";
-	var port = 110;
-	var isSSL = false;
+//	var addr = "post2.saraya.com"; 
+//	var user = "receiver@saraya.com";
+//	var pass = "password";
+//	var port = 110;
+//	var isSSL = false;
+	
+//	var addr = "10.1.1.28"; 
+//	var user = "ktone";
+//	var pass = "5471";
+//	var port = 110;
+//	var isSSL = false;	
+//	
 //	
 //	var addr = "WEBAPP64.sarayajp.local"; 
 //	var user = "info";
@@ -78,11 +84,11 @@ function receiveMailMain () {
 //	var port = 110;
 //	var isSSL = false;
 	
-//	var addr = "post3.saraya.com"; 
-//	var user = "test@mail.saraya.com";
-//	var pass = "test";
-//	var port = 110;
-//	var isSSL = false;	
+	var addr = "post3.saraya.com"; 
+	var user = "test@mail.saraya.com";
+	var pass = "test";
+	var port = 110;
+	var isSSL = false;	
 	
 //	var date ; 
 
@@ -97,6 +103,10 @@ function receiveMailMain () {
 
 		var theMail = new ds.Mailbox(); 
 		
+		theMail.title =  oneMail["Subject"] ;
+		var folderpath = getpath(theMail.title);
+		if (folderpath == "none") return; // 件名に拠点名がなければ処理しない
+		
 		var msgid = oneMail["Message-ID"];
 		if (msgid == undefined) {
 			msgid = oneMail["Message-Id"];
@@ -104,14 +114,14 @@ function receiveMailMain () {
 	
 		var found = ds.Mailbox.find("messageID = :1",msgid);
 		
-		if (found != null) return; // すでにメールがあれば以下の処理は実行しない 
+		if (found != null && found.allSaved == true) return; // すでにメールがあり添付保存済みならば以下の処理は実行しない 
 		
 		theMail.messageID = msgid; 
 		theMail.sender = oneMail["From"] ;
-		theMail.title =  oneMail["Subject"] ;
-		var folderpath = getpath(theMail.title);
-		
+
 		theMail.sentDate  = oneMail["Date"];
+		
+		if (theMail.dateString < "2013/01/01 00:00:00") return; // 2013年以前のメールは対象外
 		
 		theMail.isMIME = oneMail.isMIME();
 		
